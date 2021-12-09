@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+from datetime import date
 import os
 import AddToDB
 
@@ -42,20 +43,20 @@ def db(hackathons):
 if __name__ == "__main__":
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options) 
-    
-    URL = "https://mlh.io/seasons/2022/events"
-    driver.get(URL)
+    if date.today().weekday() == 0:
+        URL = "https://mlh.io/seasons/2022/events"
+        driver.get(URL)
 
-    time.sleep(5)
+        time.sleep(5)
 
-    html = driver.page_source
+        html = driver.page_source
 
-    soup = BeautifulSoup(html, "html.parser")
-    results = soup.find_all(class_ = "event-link")
-    hackathons = []
-    hackathonDetails = []
-    for result in results:
-        hackathons.append(result.prettify())
-    for i in hackathons:
-        hackathonDetails.append(getDetails(i,'2021'))
-    db(hackathonDetails)  
+        soup = BeautifulSoup(html, "html.parser")
+        results = soup.find_all(class_ = "event-link")
+        hackathons = []
+        hackathonDetails = []
+        for result in results:
+            hackathons.append(result.prettify())
+        for i in hackathons:
+            hackathonDetails.append(getDetails(i,'2021'))
+        db(hackathonDetails)  
